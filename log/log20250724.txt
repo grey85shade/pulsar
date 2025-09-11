@@ -1,0 +1,2 @@
+[2025-07-24] - [15:28:18] - [INFO] - update user
+[2025-07-24] - [15:28:18] - [INFO] - User test Modificado correctamente
