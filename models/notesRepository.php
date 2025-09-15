@@ -1,26 +1,26 @@
 <?php
 
- class logsRepository extends dbRepository {
+ class notesRepository extends dbRepository {
     
-    public function getAllLogs($idUser, $libreta = null) {
-        $sql = "SELECT * FROM logs where user = " . $idUser . " ORDER BY date DESC";
+    public function getAllNotes($idUser, $libreta = null) {
+        $sql = "SELECT * FROM notes where user = " . $idUser . " ORDER BY date DESC";
         $result = $this->con->query($sql);
         
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
         
     }
 
-    public function getLogById($idLog) {
-        $sql = "SELECT * FROM logs where id = " . intval($idLog) . " AND user = " . $_SESSION['idUser'];
+    public function getNoteById($idNote) {
+        $sql = "SELECT * FROM notes where id = " . intval($idNote) . " AND user = " . $_SESSION['idUser'];
         $result = $this->con->query($sql);
         
         return $result ? $result->fetch_assoc() : null;
     }
 
-    public function addLog($logData)
+    public function addNote($noteData)
     {
         // Preparar la consulta usando prepared statements para mayor seguridad
-        $sql = "INSERT INTO logs (user, date, tags, content, pass) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO notes (user, date, tags, content, pass) VALUES (?, ?, ?, ?, ?)";
         
         // Preparar el statement
         $stmt = $this->con->prepare($sql);
@@ -30,11 +30,11 @@
 
         // Vincular los parámetros
         $stmt->bind_param("iisss", 
-            $logData['idUser'],
-            $logData['date'],
-            $logData['tags'],
-            $logData['content'],
-            $logData['pass']
+            $noteData['idUser'],
+            $noteData['date'],
+            $noteData['tags'],
+            $noteData['content'],
+            $noteData['pass']
         );
 
         // Ejecutar la consulta
@@ -46,12 +46,12 @@
         return $result;
     }
 
-    public function editLog($logData) {
+    public function editNote($noteData) {
         // Preparar la consulta usando prepared statements para mayor seguridad
-        $sql = "UPDATE logs 
+        $sql = "UPDATE notes 
         SET `user` = ?, `date` = ?, `tags` = ?, `content` = ?, `pass` = ? 
         WHERE id = ?";
-        
+
         // Preparar el statement
         $stmt = $this->con->prepare($sql);
         if (!$stmt) {
@@ -60,12 +60,12 @@
 
         // Vincular los parámetros
         $stmt->bind_param("iisssi", 
-            $logData['idUser'],
-            $logData['date'],
-            $logData['tags'],
-            $logData['content'],
-            $logData['pass'],
-            $logData['idLog']
+            $noteData['idUser'],
+            $noteData['date'],
+            $noteData['tags'],
+            $noteData['content'],
+            $noteData['pass'],
+            $noteData['idNote']
         );
 
         // Ejecutar la consulta
@@ -77,8 +77,8 @@
         return $result;
     }
 
-    public function deleteLog($idLog, $idUser) {
-        $sql = "DELETE FROM logs WHERE id = ? AND user = ?";
+    public function deleteNote($idNote, $idUser) {
+        $sql = "DELETE FROM notes WHERE id = ? AND user = ?";
         
         // Preparar el statement
         $stmt = $this->con->prepare($sql);
@@ -88,7 +88,7 @@
 
         // Vincular los parámetros
         $stmt->bind_param("ii", 
-            $idLog,
+            $idNote,
             $idUser
         );
 

@@ -18,7 +18,7 @@
             <div class="sidebar-header">
                 <div class="logo">
                     <!--div class="logo-icon"><i class="bi bi-person-vcard"></i></div-->
-                    <img src="/img/logo1.png" alt="Pulsar Logo" class="logo-image">
+                    <img src="/img/logo3-small.png" alt="Pulsar Logo" class="logo-image">
                 </div>
             </div>
             <nav class="sidebar-nav">

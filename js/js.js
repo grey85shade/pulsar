@@ -139,9 +139,9 @@ function closePopup(popupId) {
   if (popupId === "journalPopup") {
     categories = []
     renderCategories()
-    document.getElementById("newLogForm").reset();
-    document.getElementById("logContent").value = "";
-    document.getElementById("logIdModify").value = "";
+    document.getElementById("newNoteForm").reset();
+    document.getElementById("noteContent").value = "";
+    document.getElementById("noteIdModify").value = "";
     document.getElementById("categoryTags").innerHTML = "";
     document.getElementById("categoryHidden").value = "";
   }

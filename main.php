@@ -3,17 +3,20 @@ require ("config.php");
 require ("session.php");
 require ("dbRepository.php");
 require ("router.php");
+require ("AppUtils.php");
 
 $router = new router;
 list($controller, $action, $layout, $loggedin, $mobile, $urlVariable) = $router->getRoute();
 
 // Si elcontroller no es publico miramos si hay login
+
 if ($loggedin === true) {
     $sessionManager = new sessionManager();
     if ($sessionManager->isLogged() !== true) {
         $controller = 'loginController';
         $action = 'index';
         $layout = false;
+        require_once("controllers/loginController.php");
     }
 }
 

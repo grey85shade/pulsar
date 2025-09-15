@@ -35,6 +35,7 @@ class router {
             case '/' :
             case '' :
             case'dash' : 
+                $this->loggedin = true;
                 $this->controller = 'dashController';
                 break;
 

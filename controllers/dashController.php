@@ -1,75 +1,51 @@
 <?php
 
-include_once ("models/logsRepository.php");
+include_once ("models/notesRepository.php");
 include_once ("models/eventsRepository.php");
-include_once ("AppUtils.php");
+//include_once ("AppUtils.php");
 class dashController
 {
+    private $notesService;
+
+    public function __construct() {
+        include_once('services/notesService.php');
+        $this->notesService = new notesService();
+    }
     public function index ()
     {
-        $logs = $this->getAllLogs();
+     
+        $notes = $this->notesService->getAllNotes();
         $events = $this->getCurrentEvents();
         
         require_once ("views/dash/index.php");
 
     }
 
-    public function newLog () 
+    public function newNote () 
     {
         if (!isset($_SESSION['idUser']) || 
-            !isset($_POST['logTags']) || 
-            !isset($_POST['logDate']) || 
-            !isset($_POST['logContent'])) {
-            echo 'error 1';
+            !isset($_POST['noteTags']) || 
+            !isset($_POST['noteDate']) || 
+            !isset($_POST['noteContent'])) {
+            AppUtils::setFlash('Datos incompletos', 'error');
+            header('Location: /dash');
             exit;
         }
+        $idUser = $_SESSION['idUser'];
+        $tags = trim($_POST['noteTags']);
+        $date = trim($_POST['noteDate']);
+        $content = trim($_POST['noteContent']);
+        $pass = (!empty($_POST['newNotePass'])) ? $_POST['newNotePass'] : null;
+        $idNote = (!empty($_POST['noteIdModify'])) ? $_POST['noteIdModify'] : null;
 
-        $tags = trim($_POST['logTags']);
-        $date = trim($_POST['logDate']);
-        $content = trim($_POST['logContent']);
+        $response = json_decode($this->notesService->newNote($idUser, $idNote, $content, $date, $tags,  $pass), true);
 
-        if (empty($tags) || empty($date) || empty($content) || 
-            strlen($tags) > 200 || 
-            strlen($content) > 4800) {
-            echo 'error 2';
-            var_dump($tags, $date, $content);
-            exit;
-        }
-
-        $timestamp = strtotime($date);
-        if ($timestamp === false) {
-            echo 'error 3';
-            exit;
-        }
-
-        if ($_POST['newLogPass'] != '') {
-            $P = true;
-            $content = AppUtils::cifrar($content, $_POST['newLogPass']);
+        if ($response['error']) {
+            AppUtils::setFlash($response['error'], 'error');
         } else {
-            $P = null;
+            AppUtils::setFlash('Journal entry saved successfully.', 'success');
         }
-
-        $idLog = null;
-        if ($_POST['logIdModify'] != '') {
-            $idLog = $_POST['logIdModify'];
-        }
-
-        $logData = [
-            'idUser' => $_SESSION['idUser'],
-            'date' => $timestamp,
-            'tags' => $tags,
-            'content' => $content,
-            'pass' => $P,
-            'idLog' => $idLog
-        ];
-
-        $logsRepo = new logsRepository();
-        if ($idLog !== null) {
-            $logsRepo->editLog($logData);
-        } else {
-            $logsRepo->addLog($logData);
-        }
-        
+         
         header('Location: /dash');
     }
 
@@ -137,28 +113,23 @@ class dashController
         exit;
     }
 
-    public function deleteLog()
+    public function deleteNote()
     {
-        if (!isset($_SESSION['idUser']) || !isset($_POST['logId'])) {
+        if (!isset($_SESSION['idUser']) || !isset($_POST['noteId'])) {
+            AppUtils::setFlash('Error deleting record', 'error');
             header('Location: /dash/index');
             exit;
         }
-
-        $idLog = intval($_POST['logId']);
-        if ($idLog <= 0) {
-            header('Location: /dash/index');
-            exit;
-        }
-
-        $logsRepo = new logsRepository();
-        $result = $logsRepo->deleteLog($idLog, $_SESSION['idUser']);
-
-        if ($result) {
-            AppUtils::setFlash('Log entry deleted successfully.', 'success');
+        
+        $response = json_decode($this->notesService->deleteNote($_POST['noteId']), true);
+        
+        if ($response['success']) {
+            AppUtils::setFlash('Note deleted successfully.', 'success');
         } else {
-            AppUtils::setFlash('Could not delete log entry.', 'error');
+            AppUtils::setFlash('Could not delete the note.', 'error');
         }
-        return json_encode(['success' => $result]);
+        
+        exit;
     }
 
     public function deleteEvent()
@@ -183,18 +154,6 @@ class dashController
         return json_encode(['success' => $result]);
     }
 
-    private function getAllLogs ()
-    {
-        if (isset($_SESSION['idUser'])) {
-            $idUser = $_SESSION['idUser'];
-        } else {
-            header('Location: /login');
-            exit;
-        }
-
-        $logsRepo = new logsRepository();
-        return $logsRepo->getAllLogs($idUser);
-    }
     private function getCurrentEvents ()
     {
         $idUser = $_SESSION['idUser'];
