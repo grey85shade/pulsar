@@ -58,17 +58,67 @@ class AppUtils {
         return openssl_decrypt($cifrado, 'AES-256-CBC', $clave, OPENSSL_RAW_DATA, $iv);
     }
 
-    public static function renderSafeHtml($texto) {
-    // Lista de etiquetas permitidas
-    $allowedTags = '<h1><h2><h3><h4><h5><h6><b><strong><i><em><u><p><br><ul><ol><li>';
+    public static function renderSafeHtml($html) {
+        // Lista de etiquetas permitidas
+        /*$allowedTags = '<h1><h2><h3><h4><h5><h6><b><strong><i><em><u><p><br><ul><ol><li><div><span><blockquote>';
 
-    // Elimina todas las etiquetas que no estén en la lista
-    $textoSeguro = strip_tags($texto, $allowedTags);
+        // Elimina todas las etiquetas que no estén en la lista
+        $textoSeguro = strip_tags($texto, $allowedTags);
 
-    // Convierte saltos de línea en <br>
-    $textoSeguro = nl2br($textoSeguro, false);
+        // Convierte saltos de línea en <br>
+        $textoSeguro = nl2br($textoSeguro, false);
+        return $textoSeguro;*/
+        // Lista de etiquetas permitidas
+    $allowedTags = ['h1','h2','h3','h4','h5','h6',
+        'b','strong','i','em','u',
+        'p','br','ul','ol','li',
+        'div','span','blockquote','a'];
 
-    return $textoSeguro;
+    // Reglas de atributos permitidos
+    $allowedAttrs = [
+        'a'    => ['href', 'rel', 'target'],
+        'span' => ['class', 'style'],
+        'div'  => ['class'],
+    ];
+
+    // Cargar en DOM
+    libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    $dom->loadHTML('<?xml encoding="utf-8" ?>'.$html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+
+    $xpath = new DOMXPath($dom);
+    foreach ($xpath->query('//*') as $el) {
+        $tag = $el->nodeName;
+
+        // Si el tag no está permitido → lo eliminamos
+        if (!in_array($tag, $allowedTags)) {
+            $el->parentNode->removeChild($el);
+            continue;
+        }
+
+        // Filtrar atributos
+        $keepAttrs = $allowedAttrs[$tag] ?? [];
+        foreach (iterator_to_array($el->attributes) as $attr) {
+            $name = $attr->nodeName;
+            $value = $attr->nodeValue;
+
+            if (!in_array($name, $keepAttrs)) {
+                $el->removeAttribute($name);
+                continue;
+            }
+
+            // Validaciones extra
+            if ($name === 'href' && preg_match('/^(javascript|data):/i', $value)) {
+                $el->removeAttribute($name);
+            }
+            if ($name === 'style' && stripos($value, 'expression') !== false) {
+                $el->removeAttribute($name);
+            }
+        }
+    }
+
+    return $dom->saveHTML();
 }
 
 }

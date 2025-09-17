@@ -1,6 +1,5 @@
 <?php
 
-include_once ("models/notesRepository.php");
 include_once ("models/eventsRepository.php");
 //include_once ("AppUtils.php");
 class dashController

@@ -1,4 +1,4 @@
-<script src="/js/notes.js"></script>
+
 
 <!-- Journal Block -->
 <div class="dashboard-card journal-card">
@@ -87,7 +87,10 @@
             </div>
             <div class="form-group">
                 <label>Description:</label>
-                <textarea id="noteContent" name="noteContent" oninput="autoSave();" placeholder="What happened today?"></textarea>
+            
+            <input type="hidden" id="noteContent" name="noteContent">
+                <div id="editor" class="editor-nota">
+                </div>
             </div>
             <div class="form-actions">
                 <button type="button" onclick="closePopup('journalPopup')">Cancel</button>
@@ -114,7 +117,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <div id="noteContentView"></div>
+                <div class="ql-bubble" style="margin-top: -56px;">
+                    <div class="ql-editor">
+                        <div id="noteContentView"></div>
+                    </div>
+                </div>
             </div>
             <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="action-buttons" style="display: flex; gap: 1rem;">
@@ -130,3 +137,35 @@
         </form>
     </div>
 </div>
+
+<script>
+    
+var toolbarOptions = [
+  ['bold', 'italic'],
+  ['blockquote', 'code-block'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'size': ['small', false, 'large', 'huge'] }],
+  [{ 'color': [] }],
+  ['link',],
+  ['clean']
+];
+
+var quill = new Quill('#editor', {
+  theme: 'snow',
+  modules: {
+    toolbar: toolbarOptions
+  }
+});
+
+
+    // Antes de enviar el formulario, volcamos el contenido
+    document.querySelector('form').onsubmit = function() {
+        document.querySelector('#noteContent').value = quill.root.innerHTML;
+    };
+    
+    quill.on('text-change', function() {
+        document.querySelector('#noteContent').value = quill.root.innerHTML;
+        autoSave();
+    });
+</script>
+<script src="/js/notes.js"></script>

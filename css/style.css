@@ -318,18 +318,11 @@ b {
   text-align: center;
 }
 
-.events-bars {
-  space-y: 1rem;
-}
-
 .event-bar {
   margin-bottom: 10px;
   padding: 10px;
   box-shadow: 0 0px 7px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-}
-.event-bar:hover {
-  
 }
 
 .bar-info {
@@ -700,6 +693,20 @@ b {
     font-size: 20px;
     color: #333;
     cursor: pointer;
+}
+
+.editor-nota {
+    border: 1px solid #c3ccff;
+    border-radius: 8px;
+    height: 300px;
+    padding: 7px;
+}
+
+.ql-toolbar.ql-snow + .ql-container.ql-snow {
+    border: 1px solid #c3ccff;
+}
+.ql-toolbar.ql-snow  {
+    border: 0px;
 }
 
 /* Responsive */

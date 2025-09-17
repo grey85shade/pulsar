@@ -17,6 +17,13 @@ class notesService
         $tags = trim($tags);
         $date = trim($date);
         $content = trim($content);
+        $content = preg_replace('/^(<p><br><\/p>)+/', '', $content);
+
+        // Quitar <p> vacíos al principio
+        $content = preg_replace('/^(<p>(\s|&nbsp;|<br\s*\/?>)*<\/p>)+/i', '', $content);
+
+        // Quitar <p> vacíos al final
+        $content = preg_replace('/(<p>(\s|&nbsp;|<br\s*\/?>)*<\/p>)+$/i', '', $content);
 
         if (empty($content) || 
             strlen($tags) > 200 || 

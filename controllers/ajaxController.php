@@ -40,7 +40,8 @@ class ajaxController
             if ($pass !== null && $note['pass'] != '') {
                 $note['content'] = AppUtils::descifrar($note['content'], $pass);
             }
-           $note['content'] = AppUtils::renderSafeHtml($note['content']);
+            $note['content'] = preg_replace('/^(<p><br><\/p>)+/', '', $note['content']);
+            $note['content'] = AppUtils::renderSafeHtml($note['content']);
             echo json_encode($note, JSON_UNESCAPED_UNICODE);
         } else {
             http_response_code(404);

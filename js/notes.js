@@ -184,7 +184,9 @@ function editNote() {
         // Handle content
         if (valor.content) {
             valor.content = valor.content.replace(/<br\s*\/?>/gi, "");
-            document.getElementById("noteContent").value = valor.content;
+            quill.setText('');
+            quill.clipboard.dangerouslyPasteHTML(valor.content);
+            //quill.root.innerHTML = valor.content;
         }
         
         // Handle date

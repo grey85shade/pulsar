@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.bubble.css" />
+
+
     
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -29,19 +35,12 @@
                 <a href="#" class="nav-item">
                     <i class="bi bi-bank"></i>
                     <span class="nav-text">Finanzas</span>
-                </a>
                 <a href="#" class="nav-item">
                     <i class="bi bi-gear"></i>
                     <span class="nav-text">Systems</span>
                 </a>
             </nav>
         </aside>
-
-
-
-
-
-            
 
 
             <?php
